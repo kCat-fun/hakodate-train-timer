@@ -95,8 +95,8 @@
             "lat": 41.783943006241664,
             "lng": 140.74836895773356
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 2
     },
     {
         "name": "堀川町",
@@ -104,8 +104,8 @@
             "lat": 41.78067440795613,
             "lng": 140.74430974794575
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 2
     },
     {
         "name": "昭和橋",
@@ -113,8 +113,8 @@
             "lat": 41.77797057354325,
             "lng": 140.74078619198542
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 1
     },
     {
         "name": "千歳町",
@@ -122,8 +122,8 @@
             "lat": 41.7759914945506,
             "lng": 140.7384002944104
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 2
     },
     {
         "name": "新川町",
@@ -131,8 +131,8 @@
             "lat": 41.77370374200627,
             "lng": 140.73557224940382
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 1,
+        "down_next_station_default_time": 2
     },
     {
         "name": "松風町",
@@ -140,8 +140,8 @@
             "lat": 41.77147712571874,
             "lng": 140.73317997245084
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 4
     },
     {
         "name": "函館駅前",
@@ -149,8 +149,8 @@
             "lat": 41.7723606783421,
             "lng": 140.72783217467597
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 3,
+        "down_next_station_default_time": 1
     },
     {
         "name": "市役所前",
@@ -158,8 +158,8 @@
             "lat": 41.7694317739826,
             "lng": 140.7255512716905
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 3,
+        "down_next_station_default_time": 1
     },
     {
         "name": "魚市場前",
@@ -167,8 +167,8 @@
             "lat": 41.76677526778201,
             "lng": 140.72296826660988
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 1,
+        "down_next_station_default_time": 4
     },
     {
         "name": "十字街",
@@ -176,8 +176,8 @@
             "lat": 41.764115402104785,
             "lng": 140.71862389167032
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 3
     },
     {
         "name": "広末町",
@@ -185,8 +185,8 @@
             "lat": 41.76660140739719,
             "lng": 140.7124085822383
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 5,
+        "down_next_station_default_time": 1
     },
     {
         "name": "大町",
@@ -194,8 +194,8 @@
             "lat": 41.76999756853139,
             "lng": 140.70931208498013
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 4
     },
     {
         "name": "函館どつく前",
@@ -203,7 +203,7 @@
             "lat": 41.77315342436222,
             "lng": 140.704264175375
         },
-        "up_next_station_default_time": 0,
+        "up_next_station_default_time": 1,
         "down_next_station_default_time": 0
     },
     {
@@ -212,8 +212,8 @@
             "lat": 41.764159532506895,
             "lng": 140.7183691489418
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 2,
+        "down_next_station_default_time": 2
     },
     {
         "name": "宝来町",
@@ -221,8 +221,8 @@
             "lat": 41.76075981725624,
             "lng": 140.72010463017074
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 3,
+        "down_next_station_default_time": 2
     },
     {
         "name": "青柳町",
@@ -230,8 +230,8 @@
             "lat": 41.75650071997208,
             "lng": 140.7183205719651
         },
-        "up_next_station_default_time": 0,
-        "down_next_station_default_time": 0
+        "up_next_station_default_time": 4,
+        "down_next_station_default_time": 4
     },
     {
         "name": "谷地頭",
@@ -239,7 +239,7 @@
             "lat": 41.753294474669076,
             "lng": 140.71638638267729
         },
-        "up_next_station_default_time": 0,
+        "up_next_station_default_time": 2,
         "down_next_station_default_time": 0
     }
 ]

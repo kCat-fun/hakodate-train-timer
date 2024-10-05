@@ -18,6 +18,8 @@
                 <div class="distance">{{ targetStationDistance }} メートル</div>
                 <div>現在地から選択した電停までの到着まであと</div>
                 <div class="distance">{{ predictedTravelTime }}</div>
+                <div>目的地方向の最寄り駅</div>
+                <div class="distance">{{ nearestStation }}</div>
             </div>
         </div>
     </div>
@@ -36,9 +38,10 @@ const selectStationNumber = ref();
 const predictedTravelTime = ref('0分0秒');
 
 let map: any;
-const tolerance = 50; // 電停がルート上にあるかどうかを判断するための許容範囲
+const tolerance = 120; // 電停がルート上にあるかどうかを判断するための許容範囲
 const mapRef = ref<HTMLElement | null>(null)
-
+const nearestStation = ref('-');
+let moveSpeed = 0;
 onMounted(() => {
     // 位置情報の変化を監視
     // navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
@@ -143,74 +146,80 @@ const updateTagetStationDistance = (stationNumber: number) => {
     if (stationNumber == undefined) return;
     selectStationNumber.value = stationNumber;
 
-    let closestStation = null;
-    let minDistance = Infinity;
+    navigator.geolocation.getCurrentPosition((position) => {
+        let closestStation = null;
+        let minDistance = Infinity;
 
-    const currentPosition = map.getCenter(); // 現在地
-    const destinationPosition = new google.maps.LatLng(stationData[stationNumber].pos.lat, stationData[stationNumber].pos.lng); // 目的の電停
+        const currentPosition = map.getCenter(); // 現在地
+        const destinationPosition = new google.maps.LatLng(stationData[stationNumber].pos.lat, stationData[stationNumber].pos.lng); // 目的の電停
 
-    stationData.forEach((station: any, index: number) => {
-        const stationPosition = new google.maps.LatLng(station.pos.lat, station.pos.lng);
-        // 現在地から目的地までの直線距離
-        const totalDistance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, destinationPosition);
-        // 現在地から電停までの距離
-        const distanceToStation = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, stationPosition);
-        // 電停から目的地までの距離
-        const distanceFromStationToDestination = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, destinationPosition);
-        // 電停がルート上にあるかどうかを判断
-        if (distanceToStation + distanceFromStationToDestination <= totalDistance + tolerance) {
-            // ルート上にあり、かつ最も近い電停を選択
-            if (distanceToStation < minDistance) {
-                minDistance = distanceToStation;
-                closestStation = index;
+        stationData.forEach((station: any, index: number) => {
+            const stationPosition = new google.maps.LatLng(station.pos.lat, station.pos.lng);
+            // 現在地から目的地までの直線距離
+            const totalDistance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, destinationPosition);
+            // 現在地から電停までの距離
+            const distanceToStation = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, stationPosition);
+            // 電停から目的地までの距離
+            const distanceFromStationToDestination = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, destinationPosition);
+            // 電停がルート上にあるかどうかを判断
+            if (distanceToStation + distanceFromStationToDestination <= totalDistance + tolerance) {
+                // ルート上にあり、かつ最も近い電停を選択
+                if (distanceToStation < minDistance) {
+                    minDistance = distanceToStation;
+                    closestStation = index;
+                }
             }
+        });
+
+        if (closestStation !== null) {
+            // console.log(stationData[closestStation].name);
+            nearestStation.value = stationData[closestStation].name;
+        }
+
+        // 現在地から選択した駅までの直線距離を計算
+        const stationPosition = new google.maps.LatLng(stationData[stationNumber].pos.lat, stationData[stationNumber].pos.lng);
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, stationPosition);
+        console.log(`Distance to selected station: ${distance} meters`);
+        targetStationDistance.value = Number(distance.toFixed(1));
+
+
+        // 駅間の距離を考慮して目的の電停までの距離を計算
+        if (closestStation !== null) {
+            const closestStationPosition = new google.maps.LatLng(stationData[closestStation].pos.lat, stationData[closestStation].pos.lng);
+            const closerStationDistandce = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, closestStationPosition);
+            targetStationRailDistance.value = closerStationDistandce;
+
+            let trainSpeed = position.coords.speed; // 電車の速度 (km/h)
+            if(trainSpeed == null) {
+                trainSpeed = 10.0;
+            }
+
+            let timeRequired = (closerStationDistandce / 1000.0) / trainSpeed; // 所要時間 (h)
+
+            if (closestStation < Number(stationNumber)) {
+                for (let i = closestStation; i < Number(stationNumber); i++) {
+                    const stationPosition = new google.maps.LatLng(stationData[i].pos.lat, stationData[i].pos.lng);
+                    const distance = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, new google.maps.LatLng(stationData[i + 1].pos.lat, stationData[i + 1].pos.lng));
+                    targetStationRailDistance.value += distance;
+                    timeRequired += stationData[i].down_next_station_default_time;
+                }
+            } else if (closestStation > Number(stationNumber)) {
+                for (let i = closestStation; i > Number(stationNumber); i--) {
+                    const stationPosition = new google.maps.LatLng(stationData[i].pos.lat, stationData[i].pos.lng);
+                    const distance = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, new google.maps.LatLng(stationData[i - 1].pos.lat, stationData[i - 1].pos.lng));
+                    targetStationRailDistance.value += distance;
+                    timeRequired += stationData[i].up_next_station_default_time;
+                    console.log(stationData[i].name);
+                }
+            }
+            targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
+            console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
+
+            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed);
+            console.log("所用時間予想：", _predictedTravelTime);
+            predictedTravelTime.value = String(_predictedTravelTime);
         }
     });
-
-    if (closestStation !== null) {
-        console.log(stationData[closestStation].name);
-    }
-
-    // 現在地から選択した駅までの直線距離を計算
-    const stationPosition = new google.maps.LatLng(stationData[stationNumber].pos.lat, stationData[stationNumber].pos.lng);
-    const distance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, stationPosition);
-    console.log(`Distance to selected station: ${distance} meters`);
-    targetStationDistance.value = Number(distance.toFixed(1));
-
-    
-    // 駅間の距離を考慮して目的の電停までの距離を計算
-    if (closestStation !== null) {
-        const closestStationPosition = new google.maps.LatLng(stationData[closestStation].pos.lat, stationData[closestStation].pos.lng);
-        const closerStationDistandce = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, closestStationPosition);
-        targetStationRailDistance.value = closerStationDistandce;
-
-        const trainSpeed = 10.0; // 電車の速度 (km/h)
-
-        let timeRequired = (closerStationDistandce / 1000.0) / trainSpeed; // 所要時間 (h)
-
-        if (closestStation < Number(stationNumber)) {
-            for (let i = closestStation; i < Number(stationNumber); i++) {
-                const stationPosition = new google.maps.LatLng(stationData[i].pos.lat, stationData[i].pos.lng);
-                const distance = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, new google.maps.LatLng(stationData[i + 1].pos.lat, stationData[i + 1].pos.lng));
-                targetStationRailDistance.value += distance;
-                timeRequired += stationData[i].down_next_station_default_time;
-            }
-        } else if (closestStation > Number(stationNumber)) {
-            for (let i = closestStation; i > Number(stationNumber); i--) {
-                const stationPosition = new google.maps.LatLng(stationData[i].pos.lat, stationData[i].pos.lng);
-                const distance = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, new google.maps.LatLng(stationData[i - 1].pos.lat, stationData[i - 1].pos.lng));
-                targetStationRailDistance.value += distance;
-                timeRequired += stationData[i].up_next_station_default_time;
-                console.log(stationData[i].name);
-            }
-        }
-        targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
-        console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
-
-        const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed);
-        console.log("所用時間予想：", _predictedTravelTime);
-        predictedTravelTime.value = String(_predictedTravelTime);
-    }
 };
 
 const handlePositionUpdate = (position: GeolocationPosition) => {
