@@ -1,0 +1,29 @@
+[
+    {
+        "name": "湯の川",
+        "pos": {
+            "lat": 41.78104772633232,
+            "lng": 140.79008257536412
+        },
+        "up_next_station_default_time": 0,
+        "down_next_station_default_time": 3
+    },
+    {
+        "name": "湯の川温泉",
+        "pos": {
+            "lat": 41.78000077069504,
+            "lng": 140.78505162683655
+        },
+        "up_next_station_default_time": 3,
+        "down_next_station_default_time": 3
+    },
+    {
+        "name": "函館アリーナ前",
+        "pos": {
+            "lat": 41.78190272743498,
+            "lng": 140.78240745379478
+        },
+        "up_next_station_default_time": 3,
+        "down_next_station_default_time": 3
+    }
+]
