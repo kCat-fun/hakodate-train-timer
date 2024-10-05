@@ -1,6 +1,6 @@
 <template>
     <div id="main">
-        <div ref="mapRef" style="height: 400px; width: 100%;"></div>
+        <div ref="mapRef" style="height: 300px; width: 100%;"></div>
         <div class="console">
             <div class="station-select-box-wrap">
                 <select class="station-select-box" @change="handleStationChange">
@@ -16,7 +16,7 @@
                 <div class="distance">{{ targetStationRailDistance }} メートル</div>
                 <div>現在地から選択した電停までの直線距離</div>
                 <div class="distance">{{ targetStationDistance }} メートル</div>
-                <div>現在地から選択した電停までの到着まであと</div>
+                <div>現在地から選択した電停の到着まであと</div>
                 <div class="distance">{{ predictedTravelTime }}</div>
                 <div>目的地方向の最寄り駅</div>
                 <div class="distance">{{ nearestStation }}</div>
