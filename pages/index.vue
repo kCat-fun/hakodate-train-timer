@@ -173,6 +173,12 @@ const updateTagetStationDistance = (stationNumber: number) => {
 
         if (closestStation !== null) {
             // console.log(stationData[closestStation].name);
+            if(closestStation == 20 && stationNumber > 24) {
+                closestStation = 24;
+            }
+            else if(closestStation == 24 && stationNumber < 24) {
+                closestStation = 20;
+            }
             nearestStation.value = stationData[closestStation].name;
         }
 
