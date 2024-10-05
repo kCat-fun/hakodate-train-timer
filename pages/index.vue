@@ -44,16 +44,15 @@ const nearestStation = ref('-');
 let moveSpeed = 0;
 onMounted(() => {
     // 位置情報の変化を監視
-    // navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
     navigator.geolocation.getCurrentPosition((position) => {
-        // const pos = {
-        //     lat: position.coords.latitude,
-        //     lng: position.coords.longitude
-        // };
         const pos = {
-            lat: 41.784475714327726,
-            lng: 140.77572328792075
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
         };
+        // const pos = {
+        //     lat: 41.784475714327726,
+        //     lng: 140.77572328792075
+        // };
 
         const loader = new Loader({
             apiKey: ctx.apiKey,  // ここにAPIキーを入力
@@ -113,6 +112,7 @@ onMounted(() => {
     }, () => {
         console.error('Geolocation failed');
     });
+    navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
 });
 
 const handleStationChange = () => {
@@ -190,7 +190,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
             targetStationRailDistance.value = closerStationDistandce;
 
             let trainSpeed = position.coords.speed; // 電車の速度 (km/h)
-            if(trainSpeed == null) {
+            if (trainSpeed == null) {
                 trainSpeed = 10.0;
             }
 
