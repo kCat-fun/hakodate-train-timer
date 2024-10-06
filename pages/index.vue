@@ -120,7 +120,7 @@ onMounted(() => {
             console.error('Geolocation failed');
         });
         // navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
-    }, 3000);
+    }, 1000);
 });
 
 const handleStationChange = () => {
