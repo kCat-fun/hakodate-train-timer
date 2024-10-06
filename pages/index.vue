@@ -231,7 +231,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 }
             }
 
-            if(startFlag == false){
+            if (startFlag == false) {
                 startDistance = targetStationRailDistance.value;
                 startFlag = true;
             }
@@ -240,7 +240,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
-            const calcTime = targetStationRailDistance.value / ((startDistance - targetStationRailDistance.value) / (((Date.now() - startTime) / 1000.0) / (60.0 * 60.0))); // 経過時間 (h)
+            const calcTime = (targetStationRailDistance.value / 1000.0) / (((startDistance - targetStationRailDistance.value) / 1000.0) / (((Date.now() - startTime) / 1000.0) / (60.0 * 60.0))); // 経過時間 (h)
 
             const _predictedTravelTime = calculateTravelTime(timeRequired / 60.0, calcTime);
             console.log("所用時間予想：", _predictedTravelTime);
