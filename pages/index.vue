@@ -242,7 +242,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
 
             const calcTime = targetStationRailDistance.value / ((startDistance - targetStationRailDistance.value) / (((Date.now() - startTime) / 1000.0) / (60.0 * 60.0))); // 経過時間 (h)
 
-            const _predictedTravelTime = calculateTravelTime(timeRequired, calcTime);
+            const _predictedTravelTime = calculateTravelTime(timeRequired / 60.0, calcTime);
             console.log("所用時間予想：", _predictedTravelTime);
             predictedTravelTime.value = String(_predictedTravelTime);
         }
@@ -320,7 +320,7 @@ const handleError = () => {
 
 const calculateTravelTime = (defaultTime: number, calcTime: number): string => {
     // 実際の速度が通常速度より遅いか速いかによって所要時間を調整
-    const adjustedTime = Math.min(calcTime, defaultTime / 60.0) + (10.0 / 60.0);
+    const adjustedTime = Math.max(Math.min(defaultTime + (10.0 / 60.0), calcTime), 0.0);
 
     // 分と秒に分割
     const minutes = Math.floor(adjustedTime * 60);
