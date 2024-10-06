@@ -163,6 +163,37 @@ const updateTagetStationDistance = (stationNumber: number) => {
         let closestStation = null;
         let minDistance = Infinity;
 
+        if (mapRef.value) {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            
+            map = new google.maps.Map(mapRef.value, {
+                center: pos,
+                zoom: 13,
+                styles: [
+                    {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [{ visibility: "off" }]
+                    }
+                ]
+            });
+
+            // 青い丸の表示
+            new google.maps.Circle({
+                strokeColor: "#007bff",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#007bff",
+                fillOpacity: 0.35,
+                map: map,
+                center: pos,
+                radius: 50, // 半径50メートルの円
+            });
+        }
+
         const currentPosition = map.getCenter(); // 現在地
         const destinationPosition = new google.maps.LatLng(stationData[stationNumber].pos.lat, stationData[stationNumber].pos.lng); // 目的の電停
 
@@ -324,7 +355,7 @@ const calculateTravelTime = (distance: number, defaultTime: number, currentSpeed
 
 
     // 実際の速度が通常速度より遅いか速いかによって所要時間を調整
-    const adjustedTime = Math.max(0, Math.min(defaultTime / 60.0, (defaultTime / 60.0) * (defaultSpeed / currentSpeed)));
+    const adjustedTime = Math.max(0, Math.min((defaultTime / 60.0), (defaultTime / 60.0) * (defaultSpeed / currentSpeed)));
 
     // 分と秒に分割
     const minutes = Math.floor(adjustedTime * 60);
