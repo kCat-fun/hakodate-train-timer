@@ -216,6 +216,12 @@ const updateTagetStationDistance = (stationNumber: number) => {
                     console.error('Invalid coordinates:', lat, lng);
                 }
             });
+            // 新しいマーカーを追加するための処理
+            const marker = new google.maps.Marker({
+                map: map,
+                position: stationData[stationNumber].pos,
+                title: stationData[stationNumber].name
+            });
 
         }
 
