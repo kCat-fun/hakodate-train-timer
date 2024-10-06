@@ -240,7 +240,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
-            const _predictedTravelTime = calculateTravelTime(timeRequired / 60.0, trainSpeed.value);
+            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed.value);
             console.log("所用時間予想：", _predictedTravelTime);
             predictedTravelTime.value = String(_predictedTravelTime);
         }
@@ -316,9 +316,14 @@ const handleError = () => {
     console.error('Geolocation failed');
 };
 
-const calculateTravelTime = (defaultTime: number, calcTime: number): string => {
+const calculateTravelTime = (distance: number, defaultTime: number, currentSpeed: number): string => {
+    // 通常の速度 (単位時間あたりの移動距離)
+    const defaultSpeed = (distance / 1000.0) / (defaultTime / 60.0);
+    // console.log(defaultSpeed);
+    
+
     // 実際の速度が通常速度より遅いか速いかによって所要時間を調整
-    const adjustedTime = Math.max(Math.min(defaultTime + (10.0 / 60.0), calcTime), 0.0);
+    const adjustedTime = Math.max(0, Math.min(defaultTime / 60.0, (defaultTime / 60.0) * (defaultSpeed / currentSpeed)));
 
     // 分と秒に分割
     const minutes = Math.floor(adjustedTime * 60);
