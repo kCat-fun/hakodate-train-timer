@@ -20,6 +20,8 @@
                 <div class="distance">{{ predictedTravelTime }}</div>
                 <div>目的地方向の最寄り駅</div>
                 <div class="distance">{{ nearestStation }}</div>
+                <div>移動速度</div>
+                <div class="distance">{{ trainSpeed }}</div>
             </div>
         </div>
     </div>
@@ -36,6 +38,7 @@ const targetStationDistance = ref(0);
 const targetStationRailDistance = ref(0);
 const selectStationNumber = ref();
 const predictedTravelTime = ref('0分0秒');
+const trainSpeed = ref(0);
 
 let map: any;
 const tolerance = 120; // 電停がルート上にあるかどうかを判断するための許容範囲
@@ -44,75 +47,77 @@ const nearestStation = ref('-');
 let moveSpeed = 0;
 onMounted(() => {
     // 位置情報の変化を監視
-    navigator.geolocation.getCurrentPosition((position) => {
-        const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
-        // const pos = {
-        //     lat: 41.784475714327726,
-        //     lng: 140.77572328792075
-        // };
+    setInterval(() => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            // const pos = {
+            //     lat: 41.784475714327726,
+            //     lng: 140.77572328792075
+            // };
 
-        const loader = new Loader({
-            apiKey: ctx.apiKey,  // ここにAPIキーを入力
-            version: 'weekly',
-        });
+            const loader = new Loader({
+                apiKey: ctx.apiKey,  // ここにAPIキーを入力
+                version: 'weekly',
+            });
 
-        loader.load().then(() => {
-            if (mapRef.value) {
-                map = new google.maps.Map(mapRef.value, {
-                    center: pos,
-                    zoom: 13,
-                    styles: [
-                        {
-                            featureType: "poi",
-                            elementType: "labels",
-                            stylers: [{ visibility: "off" }]
+            loader.load().then(() => {
+                if (mapRef.value) {
+                    map = new google.maps.Map(mapRef.value, {
+                        center: pos,
+                        zoom: 13,
+                        styles: [
+                            {
+                                featureType: "poi",
+                                elementType: "labels",
+                                stylers: [{ visibility: "off" }]
+                            }
+                        ]
+                    });
+
+                    // 青い丸の表示
+                    new google.maps.Circle({
+                        strokeColor: "#007bff",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: "#007bff",
+                        fillOpacity: 0.35,
+                        map: map,
+                        center: pos,
+                        radius: 50, // 半径50メートルの円
+                    });
+
+                    // jsonファイルから駅の情報を取得
+                    stationData.forEach((station: any) => {
+                        // console.log(station);  // デバッグ用にstationデータを確認
+                        const lat = Number(station.pos.lat);
+                        const lng = Number(station.pos.lng);
+
+                        // latとlngが数値であるか確認
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            new google.maps.Circle({
+                                strokeColor: "#ff0000",
+                                strokeOpacity: 0.8,
+                                strokeWeight: 2,
+                                fillColor: "#ff0b00",
+                                fillOpacity: 0.35,
+                                map: map,
+                                center: { lat, lng },
+                                radius: 35, // 半径35メートルの円
+                            });
+                        } else {
+                            console.error('Invalid coordinates:', lat, lng);
                         }
-                    ]
-                });
-
-                // 青い丸の表示
-                new google.maps.Circle({
-                    strokeColor: "#007bff",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#007bff",
-                    fillOpacity: 0.35,
-                    map: map,
-                    center: pos,
-                    radius: 50, // 半径50メートルの円
-                });
-
-                // jsonファイルから駅の情報を取得
-                stationData.forEach((station: any) => {
-                    // console.log(station);  // デバッグ用にstationデータを確認
-                    const lat = Number(station.pos.lat);
-                    const lng = Number(station.pos.lng);
-
-                    // latとlngが数値であるか確認
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        new google.maps.Circle({
-                            strokeColor: "#ff0000",
-                            strokeOpacity: 0.8,
-                            strokeWeight: 2,
-                            fillColor: "#ff0b00",
-                            fillOpacity: 0.35,
-                            map: map,
-                            center: { lat, lng },
-                            radius: 35, // 半径35メートルの円
-                        });
-                    } else {
-                        console.error('Invalid coordinates:', lat, lng);
-                    }
-                });
-            }
+                    });
+                }
+            });
+        }, () => {
+            console.error('Geolocation failed');
         });
-    }, () => {
-        console.error('Geolocation failed');
-    });
-    navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
+        // navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
+    }, 3000);
 });
 
 const handleStationChange = () => {
@@ -173,10 +178,10 @@ const updateTagetStationDistance = (stationNumber: number) => {
 
         if (closestStation !== null) {
             // console.log(stationData[closestStation].name);
-            if(closestStation == 20 && stationNumber > 24) {
+            if (closestStation == 20 && stationNumber > 24) {
                 closestStation = 24;
             }
-            else if(closestStation == 24 && stationNumber < 24) {
+            else if (closestStation == 24 && stationNumber < 24) {
                 closestStation = 20;
             }
             nearestStation.value = stationData[closestStation].name;
