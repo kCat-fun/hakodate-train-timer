@@ -116,6 +116,7 @@ onMounted(() => {
                     });
                 }
             });
+            updateTagetStationDistance(selectStationNumber.value);
         }, () => {
             console.error('Geolocation failed');
         });
@@ -320,7 +321,7 @@ const calculateTravelTime = (distance: number, defaultTime: number, currentSpeed
     // 通常の速度 (単位時間あたりの移動距離)
     const defaultSpeed = (distance / 1000.0) / (defaultTime / 60.0);
     // console.log(defaultSpeed);
-    
+
 
     // 実際の速度が通常速度より遅いか速いかによって所要時間を調整
     const adjustedTime = Math.max(0, Math.min(defaultTime / 60.0, (defaultTime / 60.0) * (defaultSpeed / currentSpeed)));
