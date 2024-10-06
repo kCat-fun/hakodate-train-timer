@@ -200,12 +200,12 @@ const updateTagetStationDistance = (stationNumber: number) => {
             const closerStationDistandce = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, closestStationPosition);
             targetStationRailDistance.value = closerStationDistandce;
 
-            let trainSpeed = position.coords.speed; // 電車の速度 (km/h)
-            if (trainSpeed == null) {
-                trainSpeed = 10.0;
+            let _trainSpeed = position.coords.speed; // 電車の速度 (km/h)
+            if (_trainSpeed == null) {
+                _trainSpeed = 10.0;
             }
 
-            let timeRequired = (closerStationDistandce / 1000.0) / trainSpeed; // 所要時間 (h)
+            let timeRequired = (closerStationDistandce / 1000.0) / _trainSpeed; // 所要時間 (h)
 
             if (closestStation < Number(stationNumber)) {
                 for (let i = closestStation; i < Number(stationNumber); i++) {
@@ -223,10 +223,12 @@ const updateTagetStationDistance = (stationNumber: number) => {
                     console.log(stationData[i].name);
                 }
             }
+
+            trainSpeed.value = _trainSpeed;
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
-            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed);
+            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, _trainSpeed);
             console.log("所用時間予想：", _predictedTravelTime);
             predictedTravelTime.value = String(_predictedTravelTime);
         }
