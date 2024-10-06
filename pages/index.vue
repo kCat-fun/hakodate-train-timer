@@ -39,6 +39,9 @@ const targetStationRailDistance = ref(0);
 const selectStationNumber = ref();
 const predictedTravelTime = ref('0分0秒');
 const trainSpeed = ref(0);
+let startTime = 0;
+let startDistance = 0;
+let startFlag = false;
 
 let map: any;
 const tolerance = 120; // 電停がルート上にあるかどうかを判断するための許容範囲
@@ -123,6 +126,10 @@ onMounted(() => {
 const handleStationChange = () => {
     if (event == undefined) return;
     const stationNumber = (event.target as HTMLSelectElement).selectedIndex - 1;
+
+    startTime = Date.now();
+    startFlag = false;
+
     // 既存のマーカーを消すための処理
     if (map) {
         if (map.markers != undefined) {
@@ -224,11 +231,18 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 }
             }
 
+            if(startFlag == false){
+                startDistance = targetStationRailDistance.value;
+                startFlag = true;
+            }
+
             trainSpeed.value = _trainSpeed;
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
-            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, _trainSpeed);
+            const calcTime = targetStationRailDistance.value / ((startDistance - targetStationRailDistance.value) / (((Date.now() - startTime) / 1000.0) / (60.0 * 60.0))); // 経過時間 (h)
+
+            const _predictedTravelTime = calculateTravelTime(timeRequired, calcTime);
             console.log("所用時間予想：", _predictedTravelTime);
             predictedTravelTime.value = String(_predictedTravelTime);
         }
@@ -304,13 +318,9 @@ const handleError = () => {
     console.error('Geolocation failed');
 };
 
-const calculateTravelTime = (distance: number, defaultTime: number, currentSpeed: number): string => {
-    // 通常の速度 (単位時間あたりの移動距離)
-    const defaultSpeed = (distance / 1000.0) / (defaultTime / 60.0);
-    console.log(defaultSpeed);
-
+const calculateTravelTime = (defaultTime: number, calcTime: number): string => {
     // 実際の速度が通常速度より遅いか速いかによって所要時間を調整
-    const adjustedTime = (defaultTime / 60.0) * (defaultSpeed / currentSpeed);
+    const adjustedTime = Math.min(calcTime, defaultTime / 60.0) + (10.0 / 60.0);
 
     // 分と秒に分割
     const minutes = Math.floor(adjustedTime * 60);
