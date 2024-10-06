@@ -42,6 +42,7 @@ const trainSpeed = ref(0);
 let startTime = 0;
 let startDistance = 0;
 let startFlag = false;
+let stationNum = -1;
 
 let map: any;
 const tolerance = 120; // 電停がルート上にあるかどうかを判断するための許容範囲
@@ -158,6 +159,7 @@ const handleStationChange = () => {
 const updateTagetStationDistance = (stationNumber: number) => {
     if (stationNumber == undefined) return;
     selectStationNumber.value = stationNumber;
+    stationNum = stationNumber;
 
     navigator.geolocation.getCurrentPosition((position) => {
         let closestStation = null;
@@ -168,7 +170,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            
+
             map = new google.maps.Map(mapRef.value, {
                 center: pos,
                 zoom: 13,
@@ -192,6 +194,29 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 center: pos,
                 radius: 50, // 半径50メートルの円
             });
+            // jsonファイルから駅の情報を取得
+            stationData.forEach((station: any) => {
+                // console.log(station);  // デバッグ用にstationデータを確認
+                const lat = Number(station.pos.lat);
+                const lng = Number(station.pos.lng);
+
+                // latとlngが数値であるか確認
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    new google.maps.Circle({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: "#ff0b00",
+                        fillOpacity: 0.35,
+                        map: map,
+                        center: { lat, lng },
+                        radius: 35, // 半径35メートルの円
+                    });
+                } else {
+                    console.error('Invalid coordinates:', lat, lng);
+                }
+            });
+
         }
 
         const currentPosition = map.getCenter(); // 現在地
@@ -335,6 +360,15 @@ const handlePositionUpdate = (position: GeolocationPosition) => {
                         console.error('Invalid coordinates:', lat, lng);
                     }
                 });
+
+                if (stationNum != -1) {
+                    // 新しいマーカーを追加するための処理
+                    const marker = new google.maps.Marker({
+                        map: map,
+                        position: stationData[stationNum].pos,
+                        title: stationData[stationNum].name
+                    });
+                }
             }
         });
     } else {
