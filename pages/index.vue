@@ -50,78 +50,78 @@ const nearestStation = ref('-');
 let moveSpeed = 0;
 onMounted(() => {
     // 位置情報の変化を監視
-    setInterval(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-            // const pos = {
-            //     lat: 41.784475714327726,
-            //     lng: 140.77572328792075
-            // };
+    // setInterval(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+        const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        };
+        // const pos = {
+        //     lat: 41.784475714327726,
+        //     lng: 140.77572328792075
+        // };
 
-            const loader = new Loader({
-                apiKey: ctx.apiKey,  // ここにAPIキーを入力
-                version: 'weekly',
-            });
-
-            loader.load().then(() => {
-                if (mapRef.value) {
-                    map = new google.maps.Map(mapRef.value, {
-                        center: pos,
-                        zoom: 13,
-                        styles: [
-                            {
-                                featureType: "poi",
-                                elementType: "labels",
-                                stylers: [{ visibility: "off" }]
-                            }
-                        ]
-                    });
-
-                    // 青い丸の表示
-                    new google.maps.Circle({
-                        strokeColor: "#007bff",
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: "#007bff",
-                        fillOpacity: 0.35,
-                        map: map,
-                        center: pos,
-                        radius: 50, // 半径50メートルの円
-                    });
-
-                    // jsonファイルから駅の情報を取得
-                    stationData.forEach((station: any) => {
-                        // console.log(station);  // デバッグ用にstationデータを確認
-                        const lat = Number(station.pos.lat);
-                        const lng = Number(station.pos.lng);
-
-                        // latとlngが数値であるか確認
-                        if (!isNaN(lat) && !isNaN(lng)) {
-                            new google.maps.Circle({
-                                strokeColor: "#ff0000",
-                                strokeOpacity: 0.8,
-                                strokeWeight: 2,
-                                fillColor: "#ff0b00",
-                                fillOpacity: 0.35,
-                                map: map,
-                                center: { lat, lng },
-                                radius: 35, // 半径35メートルの円
-                            });
-                        } else {
-                            console.error('Invalid coordinates:', lat, lng);
-                        }
-                    });
-                }
-            });
-            updateTagetStationDistance(selectStationNumber.value);
-        }, () => {
-            console.error('Geolocation failed');
+        const loader = new Loader({
+            apiKey: ctx.apiKey,  // ここにAPIキーを入力
+            version: 'weekly',
         });
-        // navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
-    }, 1000);
+
+        loader.load().then(() => {
+            if (mapRef.value) {
+                map = new google.maps.Map(mapRef.value, {
+                    center: pos,
+                    zoom: 13,
+                    styles: [
+                        {
+                            featureType: "poi",
+                            elementType: "labels",
+                            stylers: [{ visibility: "off" }]
+                        }
+                    ]
+                });
+
+                // 青い丸の表示
+                new google.maps.Circle({
+                    strokeColor: "#007bff",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: "#007bff",
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: pos,
+                    radius: 50, // 半径50メートルの円
+                });
+
+                // jsonファイルから駅の情報を取得
+                stationData.forEach((station: any) => {
+                    // console.log(station);  // デバッグ用にstationデータを確認
+                    const lat = Number(station.pos.lat);
+                    const lng = Number(station.pos.lng);
+
+                    // latとlngが数値であるか確認
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        new google.maps.Circle({
+                            strokeColor: "#ff0000",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: "#ff0b00",
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: { lat, lng },
+                            radius: 35, // 半径35メートルの円
+                        });
+                    } else {
+                        console.error('Invalid coordinates:', lat, lng);
+                    }
+                });
+            }
+        });
+        // updateTagetStationDistance(selectStationNumber.value);
+    }, () => {
+        console.error('Geolocation failed');
+    });
+    navigator.geolocation.watchPosition(handlePositionUpdate, handleError);
+    // }, 1000);
 });
 
 const handleStationChange = () => {
