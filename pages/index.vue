@@ -53,14 +53,15 @@ onMounted(() => {
     // 位置情報の変化を監視
     // setInterval(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-        const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
         // const pos = {
-        //     lat: 41.784475714327726,
-        //     lng: 140.77572328792075
+        //     lat: position.coords.latitude,
+        //     lng: position.coords.longitude
         // };
+        
+        const pos = {
+            lat: 41.784475714327726,
+            lng: 140.77572328792075
+        };
 
         const loader = new Loader({
             apiKey: ctx.apiKey,  // ここにAPIキーを入力
