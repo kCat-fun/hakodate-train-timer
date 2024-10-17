@@ -313,8 +313,8 @@ const updateTagetStationDistance = (stationNumber: number) => {
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
-            // const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed.value);
-            const _predictedTravelTime = "6分13秒";
+            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed.value);
+            // const _predictedTravelTime = "6分13秒";
 
             console.log("所用時間予想：", _predictedTravelTime);
             predictedTravelTime.value = String(_predictedTravelTime);
