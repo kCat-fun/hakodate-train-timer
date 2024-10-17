@@ -305,12 +305,11 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 startFlag = true;
             }
 
-            trainSpeed.value = _trainSpeed;
+            trainSpeed.value = 3;
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
-            // const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed.value);
-            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, 3);
+            const _predictedTravelTime = calculateTravelTime(targetStationRailDistance.value, timeRequired, trainSpeed.value);
 
             console.log("所用時間予想：", _predictedTravelTime);
             predictedTravelTime.value = String(_predictedTravelTime);
