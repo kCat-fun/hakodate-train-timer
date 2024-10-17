@@ -57,7 +57,7 @@ onMounted(() => {
         //     lat: position.coords.latitude,
         //     lng: position.coords.longitude
         // };
-        
+
         const pos = {
             lat: 41.784475714327726,
             lng: 140.77572328792075
@@ -167,9 +167,14 @@ const updateTagetStationDistance = (stationNumber: number) => {
         let minDistance = Infinity;
 
         if (mapRef.value) {
+            // const pos = {
+            //     lat: position.coords.latitude,
+            //     lng: position.coords.longitude
+            // };
+
             const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
+                lat: 41.784475714327726,
+                lng: 140.77572328792075
             };
 
             map = new google.maps.Map(mapRef.value, {
