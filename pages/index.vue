@@ -305,7 +305,7 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 startFlag = true;
             }
 
-            trainSpeed.value = 3;
+            trainSpeed.value = 0.3;
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
