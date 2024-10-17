@@ -21,7 +21,7 @@
                 <div>目的地方向の最寄り駅</div>
                 <div class="distance">{{ nearestStation }}</div>
                 <div>移動速度</div>
-                <div class="distance">{{ trainSpeed }}</div>
+                <div class="distance">{{ trainSpeed }} km/h</div>
             </div>
         </div>
     </div>
@@ -276,9 +276,9 @@ const updateTagetStationDistance = (stationNumber: number) => {
             const closerStationDistandce = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, closestStationPosition);
             targetStationRailDistance.value = closerStationDistandce;
 
-            let _trainSpeed = position.coords.speed; // 電車の速度 (km/h)
+            let _trainSpeed = position.coords.speed; // 電車の速度 (m/min)
             if (_trainSpeed == null) {
-                _trainSpeed = 10.0;
+                _trainSpeed = 0.0;
             }
 
             let timeRequired = (closerStationDistandce / 1000.0) / _trainSpeed; // 所要時間 (h)
@@ -305,7 +305,8 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 startFlag = true;
             }
 
-            trainSpeed.value = 0.3;
+            // trainSpeed.value = _trainSpeed * 60; // km/h
+            trainSpeed.value = 0.3 * 60; // 0.3 km/h
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
