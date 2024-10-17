@@ -317,9 +317,14 @@ const updateTagetStationDistance = (stationNumber: number) => {
 };
 
 const handlePositionUpdate = (position: GeolocationPosition) => {
+    // const pos = {
+    //     lat: position.coords.latitude,
+    //     lng: position.coords.longitude
+    // };
+
     const pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
+        lat: 41.784475714327726,
+        lng: 140.77572328792075
     };
 
     if (!map) {
