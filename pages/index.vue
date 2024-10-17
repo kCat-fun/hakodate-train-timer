@@ -231,18 +231,21 @@ const updateTagetStationDistance = (stationNumber: number) => {
 
         }
 
-        const currentPosition = map.getCenter(); // 現在地
+        // 現在地の座標を取得
+        const currentPosition = map.getCenter();
+        // 目的地の座標を取得
         const destinationPosition = new google.maps.LatLng(stationData[stationNumber].pos.lat, stationData[stationNumber].pos.lng); // 目的の電停
 
         stationData.forEach((station: any, index: number) => {
+            // 電停の位置をgoogle.maps.LatLngオブジェクトに変換
             const stationPosition = new google.maps.LatLng(station.pos.lat, station.pos.lng);
             // 現在地から目的地までの直線距離
             const totalDistance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, destinationPosition);
-            // 現在地から電停までの距離
+            // 現在地からi番目の電停までの距離
             const distanceToStation = google.maps.geometry.spherical.computeDistanceBetween(currentPosition, stationPosition);
-            // 電停から目的地までの距離
+            // i番目の電停から目的地までの距離
             const distanceFromStationToDestination = google.maps.geometry.spherical.computeDistanceBetween(stationPosition, destinationPosition);
-            // 電停がルート上にあるかどうかを判断
+            // i番目の電停がルート上にあるかどうかを判断（toleranceは許容誤差であり、tolerance以内ならルート上にあると判断）
             if (distanceToStation + distanceFromStationToDestination <= totalDistance + tolerance) {
                 // ルート上にあり、かつ最も近い電停を選択
                 if (distanceToStation < minDistance) {
@@ -305,8 +308,8 @@ const updateTagetStationDistance = (stationNumber: number) => {
                 startFlag = true;
             }
 
-            // trainSpeed.value = _trainSpeed * 60 * 60; // km/h
-            trainSpeed.value = 0.3 * 60 * 60; // 18 km/h
+            trainSpeed.value = _trainSpeed * 60 * 60; // km/h
+            // trainSpeed.value = 0.3 * 60 * 60; // 18 km/h
             targetStationRailDistance.value = Number(targetStationRailDistance.value.toFixed(1));
             console.log(`Distance to selected station: ${targetStationRailDistance.value} meters`);
 
